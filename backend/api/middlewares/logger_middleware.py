@@ -2,7 +2,11 @@ from collections.abc import Callable
 from typing import Any
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
+from datetime import datetime
+import time
+from backend.utils import logging
 
+logger = logging.logger_setup()
 
 class LoggerMiddleware(BaseHTTPMiddleware):
     async def dispatch(
@@ -17,6 +21,24 @@ class LoggerMiddleware(BaseHTTPMiddleware):
         :param call_next: Endpoint or next middleware to be called (if any, this is the next middleware in the chain of middlewares, it is supplied by FastAPI)
         :return: Response from endpoint
         """
-        # TODO:(Member) Finish implementing this method
+        
+        start_time = time.time()
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        logger.info(f"""
+            Incoming request:
+            Time: {timestamp}
+            Method: {request.method}
+            Path: {request.url.path}
+            Query Params: {dict(request.query_params)}
+        """)
+
+        duration = time.time() - start_time
+
+        logger.info(f"""
+            Resoponse:
+            Duration: {duration}
+        """)
+
         response = await call_next(request)
         return response

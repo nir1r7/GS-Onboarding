@@ -11,7 +11,6 @@ DEFAULT_LOG_FORMAT: Final[
 - <level>{message}</level> \
 """
 
-
 def logger_setup(*, enqueue: bool = False, diagnose: bool = True) -> None:
     """
     Set up the global logger. It modifies the global logger object.
