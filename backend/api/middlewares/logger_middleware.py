@@ -6,8 +6,6 @@ from datetime import datetime
 import time
 from backend.utils import logging
 
-logger = logging.logger_setup()
-
 class LoggerMiddleware(BaseHTTPMiddleware):
     async def dispatch(
         self, request: Request, call_next: Callable[[Request], Any]
@@ -25,7 +23,10 @@ class LoggerMiddleware(BaseHTTPMiddleware):
         start_time = time.time()
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        logger.info(f"""
+        if not logging:
+            raise AttributeError("Logger not initialized")
+
+        logging.logger.info(f"""
             Incoming request:
             Time: {timestamp}
             Method: {request.method}
@@ -35,7 +36,7 @@ class LoggerMiddleware(BaseHTTPMiddleware):
 
         duration = time.time() - start_time
 
-        logger.info(f"""
+        logging.logger.info(f"""
             Resoponse:
             Duration: {duration}
         """)
